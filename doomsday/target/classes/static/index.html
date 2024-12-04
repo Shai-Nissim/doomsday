@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Day of the Week</title>
+    <script>
+        async function calculateDayOfWeek() {
+            const dateInput = document.getElementById("date").value;
+            if (!isValidDate(dateInput)) {
+                document.getElementById("result").textContent = "Invalid date selected. Please correct the date.";
+                return;
+            }
+
+            const [year, month, day] = dateInput.split('-');
+            const response = await fetch(`/api/date/dayOfWeek?day=${day}&month=${month}&year=${year}`);
+            const result = await response.text();
+
+            document.getElementById("result").textContent = `The day of the week is: ${result}`;
+        }
+
+        function isValidDate(date) {
+            const [year, month, day] = date.split('-').map(Number);
+            if (month === 2 && day === 29) {
+                return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)); // Leap year check
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<h1>Day of the Week Calculator</h1>
+<form onsubmit="event.preventDefault(); calculateDayOfWeek();">
+    <label for="date">Select a Date:</label>
+    <input type="date" id="date" required>
+    <button type="submit">Calculate</button>
+</form>
+<p id="result"></p>
+</body>
+</html>
